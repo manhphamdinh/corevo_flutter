@@ -95,3 +95,7 @@ flutter:
     - assets/images/background.png
     - assets/images/google_icon.png
     - assets/images/facebook_icon.png
+  plugin:
+    platforms:
+      macos:
+        default_package: none
