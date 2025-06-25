@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "858106933556",
+    "project_id": "corevo-42d4e",
+    "storage_bucket": "corevo-42d4e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:858106933556:android:5cda3f8c459b3c7336f561",
+        "android_client_info": {
+          "package_name": "com.corevo.flutter_application_1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "858106933556-780nn0a282gp2f23gobgruui29rudgjr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.corevo.flutter_application_1",
+            "certificate_hash": "f52c21ae6721db94c3689deb67debf13a417054e"
+          }
+        },
+        {
+          "client_id": "858106933556-c0ipssi7115ts9dlunphtjej78dqk584.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDou-Pjo9qyWL4oIu4h3Ckvwqd1Rp6bq1s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "858106933556-c0ipssi7115ts9dlunphtjej78dqk584.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

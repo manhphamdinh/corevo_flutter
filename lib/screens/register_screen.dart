@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'login_screen.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-// import 'package:google_sign_in/google_sign_in.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 // import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -17,7 +17,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _fullNameController = TextEditingController();
-
+  GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email']);
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
 
@@ -29,6 +29,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
+    GoogleSignInAccount? user = _googleSignIn.currentUser;
     return Scaffold(
       body: Stack(
         children: [
@@ -206,17 +207,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          _buildSocialButton(
-                            onTap: () => _handleGoogleRegister(),
+                          ElevatedButton(
+                            onPressed: () async {
+                              await _googleSignIn.signIn();
+                              setState(() {});
+                            },
                             child: Container(
-                              width: 48, // Đảm bảo kích thước hình vuông
+                              width: 48,
                               height: 48,
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 color: Colors.transparent,
                               ),
-                              clipBehavior: Clip
-                                  .antiAlias, // Quan trọng để cắt ảnh theo hình tròn
+                              clipBehavior: Clip.antiAlias,
                               child: Image.asset(
                                 'assets/images/google_icon.png',
                                 fit: BoxFit.cover,

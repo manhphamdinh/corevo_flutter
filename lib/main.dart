@@ -1,24 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/screens/forgotpassword_screen.dart';
 import 'package:flutter_application_1/screens/register_demo.dart';
-import 'package:flutter_application_1/screens/register_screen.dart';
-import 'screens/login_screen.dart'; // Import file LoginScreen
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Login App',
-      debugShowCheckedModeBanner: false, // Ẩn banner debug
-      theme: ThemeData(
-        primarySwatch: Colors.purple,
-        fontFamily: 'Roboto', // Font chữ
-      ),
-      home: RegisterDemo(), // Màn hình chíh
+      title: 'Corevo',
+      theme: ThemeData(primarySwatch: Colors.blue, fontFamily: 'Roboto'),
+      home: LoginScreen(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }

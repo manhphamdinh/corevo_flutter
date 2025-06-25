@@ -1,0 +1,25 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "corevo-c8ec7",
+          "appId": "1:323758759320:android:fc0444d8c114fa60c41fed",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "corevo-c8ec7",
+          "configurations": {
+            "android": "1:323758759320:android:fc0444d8c114fa60c41fed",
+            "ios": "1:323758759320:ios:e799d6a7a935959ac41fed",
+            "macos": "1:323758759320:ios:e799d6a7a935959ac41fed",
+            "web": "1:323758759320:web:1fad03a61cb509e9c41fed",
+            "windows": "1:323758759320:web:d5bfb1e93a0b5a3cc41fed"
+          }
+        }
+      }
+    }
+  }
+}

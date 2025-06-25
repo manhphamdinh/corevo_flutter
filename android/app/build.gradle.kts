@@ -1,12 +1,16 @@
 plugins {
     id("com.android.application")
+    // START: FlutterFire Configuration
+    id("com.google.gms.google-services")
+    // END: FlutterFire Configuration
     id("kotlin-android")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
+    
 }
 
 android {
-    namespace = "com.example.flutter_application_1"
+    namespace = "com.corevo.flutter_application_1"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -41,4 +45,12 @@ android {
 
 flutter {
     source = "../.."
+}
+dependencies {
+    // Firebase BoM để quản lý version đồng nhất
+    implementation(platform("com.google.firebase:firebase-bom:33.15.0"))
+
+    // Thêm Firebase SDK bạn cần (ví dụ analytics, auth...)
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-auth")
 }
