@@ -1,46 +1,33 @@
 class AppStrings {
-  // Screen titles
-  static const register = 'Đăng Ký';
+  // Authentication
+  static const String loginFailed = 'Đăng nhập thất bại';
+  static const String registerFailed = 'Đăng ký thất bại';
+  static const String generalError = 'Đã xảy ra lỗi, vui lòng thử lại';
+  static const String loginSuccess = 'Đăng nhập thành công';
+  static const String registerSuccess = 'Đăng ký thành công';
 
-  // Form fields
-  static const fullName = 'Họ và tên';
-  static const phoneOrEmail = 'Số điện thoại hoặc email';
-  static const username = 'Tên người dùng';
-  static const password = 'Mật khẩu';
-  static const confirmPassword = 'Nhập lại mật khẩu';
+  // Validation
+  static const String emailRequired = 'Email là bắt buộc';
+  static const String emailInvalid = 'Email không hợp lệ';
+  static const String passwordRequired = 'Mật khẩu là bắt buộc';
+  static const String passwordTooShort = 'Mật khẩu phải có ít nhất 6 ký tự';
+  static const String usernameRequired = 'Tên đăng nhập là bắt buộc';
+  static const String firstNameRequired = 'Họ là bắt buộc';
+  static const String lastNameRequired = 'Tên là bắt buộc';
 
-  // Buttons
-  static const registerButton = 'Đăng ký';
-  static const loginButton = 'Đăng nhập';
-  static const orSignInWith = 'Hoặc đăng nhập bằng';
-
-  // Links
-  static const alreadyHaveAccount = 'Đã có tài khoản? ';
-
-  // Terms
-  static const termsText =
-      'Bằng việc tiếp tục sử dụng Corevo, bạn đồng ý chấp nhận\n';
-  static const userAgreement = 'Thoả thuận người dùng ';
-  static const and = 'và ';
-  static const privacyPolicy = 'chính sách bảo mật';
-
-  // Validation messages
-  static const pleaseEnterFullName = 'Vui lòng nhập họ và tên';
-  static const fullNameTooShort = 'Họ và tên phải có ít nhất 2 ký tự';
-  static const pleaseEnterEmailOrPhone =
-      'Vui lòng nhập email hoặc số điện thoại';
-  static const invalidEmail = 'Email không hợp lệ';
-  static const invalidPhone = 'Số điện thoại không hợp lệ';
-  static const pleaseEnterUsername = 'Vui lòng nhập tên người dùng';
-  static const usernameTooShort = 'Tên người dùng phải có ít nhất 3 ký tự';
-  static const pleaseEnterPassword = 'Vui lòng nhập mật khẩu';
-  static const passwordTooShort = 'Mật khẩu phải có ít nhất 6 ký tự';
-  static const pleaseConfirmPassword = 'Vui lòng nhập lại mật khẩu';
-  static const passwordsDoNotMatch = 'Mật khẩu không khớp';
-
-  // Success/Error messages
-  static const registerSuccess = 'Đăng ký thành công, vui lòng đăng nhập';
-  static const registerFailed = 'Đăng ký thất bại';
-  static const generalError = 'Có lỗi xảy ra, vui lòng thử lại';
-  static const googleSignInFailed = 'Đăng nhập Google thất bại';
+  // UI Text
+  static const String login = 'Đăng nhập';
+  static const String register = 'Đăng ký';
+  static const String email = 'Email';
+  static const String password = 'Mật khẩu';
+  static const String username = 'Tên đăng nhập';
+  static const String firstName = 'Họ';
+  static const String lastName = 'Tên';
+  static const String agreeTerms =
+      'Tôi đồng ý với các Chính sách và Điều khoản sử dụng';
+  static const String orLoginWith = 'Hoặc đăng nhập bằng';
+  static const String orRegisterWith = 'Hoặc đăng ký bằng';
+  static const String forgotPassword = 'Quên mật khẩu?';
+  static const String dontHaveAccount = 'Chưa có tài khoản?';
+  static const String alreadyHaveAccount = 'Đã có tài khoản?';
 }

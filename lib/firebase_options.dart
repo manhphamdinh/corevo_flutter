@@ -64,7 +64,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '323758759320',
     projectId: 'corevo-c8ec7',
     storageBucket: 'corevo-c8ec7.firebasestorage.app',
-    iosClientId: '323758759320-dprqueuudea38nq5t4er41orb54ikbb7.apps.googleusercontent.com',
+    iosClientId:
+        '323758759320-dprqueuudea38nq5t4er41orb54ikbb7.apps.googleusercontent.com',
     iosBundleId: 'com.example.flutterApplication1',
   );
 
@@ -74,7 +75,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '323758759320',
     projectId: 'corevo-c8ec7',
     storageBucket: 'corevo-c8ec7.firebasestorage.app',
-    iosClientId: '323758759320-dprqueuudea38nq5t4er41orb54ikbb7.apps.googleusercontent.com',
+    iosClientId:
+        '323758759320-dprqueuudea38nq5t4er41orb54ikbb7.apps.googleusercontent.com',
     iosBundleId: 'com.example.flutterApplication1',
   );
 
@@ -87,5 +89,4 @@ class DefaultFirebaseOptions {
     storageBucket: 'corevo-c8ec7.firebasestorage.app',
     measurementId: 'G-T4S3KFZS65',
   );
-
 }
