@@ -9,9 +9,8 @@ import 'package:flutter_application_1/presentation/widgets/button_gg_fb_auth.dar
 import 'package:flutter_application_1/presentation/widgets/custom_input_field.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_application_1/screens/login_screen.dart';
-
-import '../../core/utils/validators.dart';
-import 'register_screen.dart';
+import 'package:flutter_application_1/data/models/register_request.dart';
+import 'package:flutter_application_1/data/repositories/auth_repository.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -153,7 +152,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 width: screenWidth * 0.52,
                 validator: Validators.validateLastName,
               ),
-              const SizedBox(width: screenWidth * 0.05),
+              const SizedBox(width: AppDimensions.spaceM),
               CustomInputField(
                 controller: _firstnameController,
                 title: AppStrings.firstName,
@@ -319,8 +318,81 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  void _handleRegister() {
-    print('');
+  void _handleRegister() async {
+    // Kiểm tra form validation
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+
+    // Kiểm tra đã tick checkbox chưa
+    if (!_agree) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Vui lòng đồng ý với các điều khoản và chính sách'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    // Bắt đầu loading
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      // Tạo request object
+      final registerRequest = RegisterRequest(
+        username: _usernameController.text.trim(),
+        password: _passwordController.text,
+        firstName: _firstnameController.text.trim(),
+        lastName: _lastnameController.text.trim(),
+        email: _emailController.text.trim(),
+      );
+
+      // Gọi API đăng ký
+      final authRepository = AuthRepository();
+      final response = await authRepository.register(registerRequest);
+
+      if (response.success) {
+        // Đăng ký thành công
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Đăng ký thành công! Vui lòng đăng nhập.'),
+            backgroundColor: Colors.green,
+          ),
+        );
+
+        // Chuyển về màn hình đăng nhập
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => LoginScreen()),
+        );
+      } else {
+        // Đăng ký thất bại
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(response.message ?? 'Đăng ký thất bại'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      // Xử lý lỗi
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Đã xảy ra lỗi: ${e.toString()}'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      // Kết thúc loading
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
   }
 
   void _handleGoogleRegister() {
