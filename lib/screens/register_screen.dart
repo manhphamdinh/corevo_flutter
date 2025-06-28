@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_application_1/core/utils/validators.dart';
-import 'package:flutter_application_1/core/constants/app_color.dart';
-import 'package:flutter_application_1/core/constants/app_dimension.dart';
-import 'package:flutter_application_1/core/constants/app_string.dart';
+import 'package:flutter_application_1/presentation/blocs/register_cubit.dart';
+import 'package:flutter_application_1/services/shared_preferences/shared_preferences.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_application_1/presentation/widgets/auth_custom_button.dart';
 import 'package:flutter_application_1/presentation/widgets/button_gg_fb_auth.dart';
 import 'package:flutter_application_1/presentation/widgets/custom_input_field.dart';
-import 'package:flutter_application_1/screens/opt_verification_screen.dart';
-import 'package:flutter_application_1/screens/login_screen.dart';
-import 'package:flutter_application_1/data/models/register_request.dart';
-import 'package:flutter_application_1/data/repositories/auth_repository.dart';
+import 'package:flutter_application_1/presentation/widgets/text_bottom_auth.dart';
+import 'package:flutter_application_1/core/constants/app_string.dart';
+import 'package:flutter_application_1/core/constants/app_color.dart';
+import 'package:flutter_application_1/core/constants/app_dimension.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -30,6 +30,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool _agree = false; // đã tick checkbox?
   bool isLoading = false; // hiển thị CircularProgressIndicator?
 
+  // Thêm hàm _showSnackBar
+  void _showSnackBar(String message, {bool isError = false}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: isError ? Colors.red : Colors.green,
+        duration: Duration(seconds: 3),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
@@ -37,52 +48,68 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       body: SafeArea(
-        child: Form(
-          key: _formKey,
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                // Header
-                Container(
-                  width: screenWidth,
-                  height: 135,
-                  decoration: const BoxDecoration(color: Color(0xFF2454F8)),
-                  child: Column(
-                    crossAxisAlignment:
-                        CrossAxisAlignment.start, // 👈 quan trọng
+        // Thêm BlocListener để lắng nghe AuthState
+        child: BlocListener<AuthBloc, AuthState>(
+          listener: (context, state) {
+            if (state is AuthSuccess) {
+              _showSnackBar(state.message ?? 'Đăng ký thành công!');
+              // Navigate to OTP verification screen với email
+              Navigator.pushNamed(
+                context,
+                '/otp-verification',
+                arguments: _emailController.text.trim(),
+              );
+            } else if (state is AuthFailure) {
+              _showSnackBar(state.message, isError: true);
+            }
+          },
+          child: Form(
+            key: _formKey,
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  // Header
+                  Container(
+                    width: screenWidth,
+                    height: 135,
+                    decoration: const BoxDecoration(color: Color(0xFF2454F8)),
+                    child: Column(
+                      crossAxisAlignment:
+                          CrossAxisAlignment.start, // 👈 quan trọng
 
-                    children: [
-                      const SizedBox(height: AppDimensions.spaceXL),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 20),
-                        child: _buildBackButton(),
-                      ),
-                      const SizedBox(height: AppDimensions.spaceXS),
-                      Center(child: _buildTitle()),
-                    ],
+                      children: [
+                        const SizedBox(height: AppDimensions.spaceXL),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 20),
+                          child: _buildBackButton(),
+                        ),
+                        const SizedBox(height: AppDimensions.spaceXS),
+                        Center(child: _buildTitle()),
+                      ],
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Column(
-                    children: [
-                      const SizedBox(height: AppDimensions.spaceXL),
-                      _buildFormFields(),
-                      const SizedBox(height: AppDimensions.spaceM),
-                      _buildAgreeRow(),
-                      const SizedBox(height: AppDimensions.spaceXL),
-                      _buildRegisterButton(),
-                      const SizedBox(height: 40),
-                      _buildDivider(),
-                      const SizedBox(height: AppDimensions.spaceM),
-                      _buildSocialButtons(),
-                      const SizedBox(height: AppDimensions.spaceXXL),
-                      _buildLogInLink(),
-                      const SizedBox(height: 20),
-                    ],
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Column(
+                      children: [
+                        const SizedBox(height: AppDimensions.spaceXL),
+                        _buildFormFields(),
+                        const SizedBox(height: AppDimensions.spaceM),
+                        _buildAgreeRow(),
+                        const SizedBox(height: AppDimensions.spaceXL),
+                        _buildRegisterButton(),
+                        const SizedBox(height: 40),
+                        _buildDivider(),
+                        const SizedBox(height: AppDimensions.spaceM),
+                        _buildSocialButtons(),
+                        const SizedBox(height: AppDimensions.spaceXXL),
+                        _buildLogInLink(),
+                        const SizedBox(height: 20),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -119,7 +146,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     return Center(
       child: Column(
-        mainAxisSize: MainAxisSize.min, // ➋ co chiều cao vừa đủ
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           CustomInputField(
@@ -143,19 +170,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               CustomInputField(
-                controller: _lastnameController,
-                title: AppStrings.lastName,
-                focusedBorderColor: Color(0xFF2454F8),
-                width: screenWidth * 0.52,
-                validator: Validators.validateLastName,
-              ),
-              const SizedBox(width: AppDimensions.spaceM),
-              CustomInputField(
                 controller: _firstnameController,
                 title: AppStrings.firstName,
                 focusedBorderColor: Color(0xFF2454F8),
-                width: screenWidth * 0.33,
+                width: screenWidth * 0.52,
                 validator: Validators.validateFirstName,
+              ),
+              const SizedBox(width: AppDimensions.spaceM),
+              CustomInputField(
+                controller: _lastnameController,
+                title: AppStrings.lastName,
+                focusedBorderColor: Color(0xFF2454F8),
+                width: screenWidth * 0.33,
+                validator: Validators.validateLastName,
               ),
             ],
           ),
@@ -241,12 +268,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  Widget _buildRegisterButton() => Center(
-    child: AuthCustomButton(
-      text: isLoading ? 'Đang đăng ký...' : AppStrings.register,
-      isLoading: isLoading,
-      onPressed: (_agree && !isLoading) ? _handleRegister : null,
-    ),
+  Widget _buildRegisterButton() => BlocBuilder<AuthBloc, AuthState>(
+    builder: (context, state) {
+      final isLoading = state is AuthLoading;
+
+      return AuthCustomButton(
+        text: isLoading ? 'Đang đăng ký...' : AppStrings.register,
+        onPressed: isLoading ? null : _handleRegister,
+        isLoading: isLoading,
+      );
+    },
   );
 
   Widget _buildDivider() {
@@ -267,21 +298,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Widget _buildSocialButtons() {
     final double screenWidth = MediaQuery.of(context).size.width;
+
     return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         ButtonGgFbAuth(
           onPressed: _handleGoogleRegister,
           image: Image(image: AssetImage('assets/images/google_icon.png')),
           text: 'Google',
-          width: screenWidth * 0.42, // Sử dụng biến screenWidth
+          width: screenWidth * 0.4,
         ),
-        const SizedBox(width: 16),
         ButtonGgFbAuth(
           onPressed: _handleFacebookRegister,
           image: Image(image: AssetImage('assets/images/facebook_icon.png')),
           text: 'Facebook',
-          width: screenWidth * 0.42,
+          width: screenWidth * 0.4,
         ),
       ],
     );
@@ -290,10 +321,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget _buildLogInLink() {
     return Center(
       child: TextButton(
-        onPressed: () => Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => LoginScreen()),
-        ),
+        onPressed: () => Navigator.pushReplacementNamed(context, '/login'),
         child: const Text.rich(
           TextSpan(
             text: 'Đã có tài khoản? ',
@@ -314,90 +342,41 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  void _handleRegister() async {
-    // Kiểm tra form validation
-    if (!_formKey.currentState!.validate()) {
-      return;
-    }
+  // Hàm _handleRegister đã được sửa
+  void _handleRegister() {
+    // 1. Kiểm tra form
+    if (!_formKey.currentState!.validate()) return;
 
-    // Kiểm tra đã tick checkbox chưa
+    // 2. Kiểm tra đã đồng ý điều khoản chưa
     if (!_agree) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Vui lòng đồng ý với các điều khoản và chính sách'),
-          backgroundColor: Colors.red,
-        ),
+      _showSnackBar(
+        'Vui lòng đồng ý với các điều khoản và chính sách',
+        isError: true,
       );
       return;
     }
 
-    setState(() {
-      isLoading = true;
-    });
+    // 3. Ẩn bàn phím
+    FocusScope.of(context).unfocus();
 
-    try {
-      // Tạo request object
-      final registerRequest = RegisterRequest(
+    // 4. Gửi sự kiện tới AuthBloc
+    context.read<AuthBloc>().add(
+      RegisterRequested(
         username: _usernameController.text.trim(),
         password: _passwordController.text,
         firstName: _firstnameController.text.trim(),
         lastName: _lastnameController.text.trim(),
         email: _emailController.text.trim(),
-      );
-
-      final authRepository = AuthRepository();
-      final response = await authRepository.register(registerRequest);
-
-      if (response.success) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              'Đăng ký thành công! Vui lòng kiểm tra email để xác thực OTP.',
-            ),
-            backgroundColor: Colors.green,
-          ),
-        );
-
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) =>
-                OtpVerificationScreen(email: _emailController.text.trim()),
-          ),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(response.message ?? 'Đăng ký thất bại'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-    } catch (e) {
-      print('Lỗi khi đăng ký: $e');
-      print(e.toString());
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Đã xảy ra lỗi: ${e.toString()}'),
-          backgroundColor: Colors.red,
-        ),
-      );
-    } finally {
-      // Dừng loading
-      if (mounted) {
-        setState(() {
-          isLoading = false;
-        });
-      }
-    }
+      ),
+    );
   }
 
   void _handleGoogleRegister() {
-    print('Google register');
+    _showSnackBar('Chức năng đăng ký bằng Google đang được phát triển');
   }
 
   void _handleFacebookRegister() {
-    print('Facebook register');
+    _showSnackBar('Chức năng đăng ký bằng Facebook đang được phát triển');
   }
 
   @override

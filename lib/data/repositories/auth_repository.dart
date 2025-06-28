@@ -9,7 +9,7 @@ import '../models/login_request.dart';
 import '../models/login_response.dart';
 
 class AuthRepository {
-  static const String _baseUrl = 'http://192.168.184.103:8080/api/v1/auth';
+  static const String _baseUrl = 'http://10.0.2.2:8080/api/v1/auth';
 
   Future<RegisterResponse> register(RegisterRequest request) async {
     try {
@@ -19,7 +19,7 @@ class AuthRepository {
         body: jsonEncode(request.toJson()),
       );
 
-      if (response.statusCode == 201) {
+      if (response.statusCode == 200) {
         return RegisterResponse(success: true);
       } else {
         final errorData = jsonDecode(response.body);
