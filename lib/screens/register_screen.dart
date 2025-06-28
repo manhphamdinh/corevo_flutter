@@ -7,7 +7,7 @@ import 'package:flutter_application_1/core/constants/app_string.dart';
 import 'package:flutter_application_1/presentation/widgets/auth_custom_button.dart';
 import 'package:flutter_application_1/presentation/widgets/button_gg_fb_auth.dart';
 import 'package:flutter_application_1/presentation/widgets/custom_input_field.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_application_1/screens/opt_verification_screen.dart';
 import 'package:flutter_application_1/screens/login_screen.dart';
 import 'package:flutter_application_1/data/models/register_request.dart';
 import 'package:flutter_application_1/data/repositories/auth_repository.dart';
@@ -29,6 +29,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool _isPasswordVisible = false;
   bool _agree = false; // đã tick checkbox?
   bool isLoading = false; // hiển thị CircularProgressIndicator?
+
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
@@ -123,14 +124,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
         children: [
           CustomInputField(
             width: screenWidth * 0.9,
-
             controller: _emailController,
             title: AppStrings.email,
             focusedBorderColor: Color(0xFF2454F8),
             keyboardType: TextInputType.emailAddress,
             validator: Validators.validateEmail,
           ),
-
           const SizedBox(height: AppDimensions.spaceM),
           CustomInputField(
             width: screenWidth * 0.9,
@@ -141,9 +140,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           ),
           const SizedBox(height: AppDimensions.spaceM),
           Row(
-            mainAxisAlignment:
-                MainAxisAlignment.center, // ➍ căn giữa hai ô trong Row
-
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               CustomInputField(
                 controller: _lastnameController,
@@ -165,7 +162,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
           const SizedBox(height: AppDimensions.spaceM),
           CustomInputField(
             width: screenWidth * 0.9,
-
             focusedBorderColor: Color(0xFF2454F8),
             controller: _passwordController,
             title: AppStrings.password,
@@ -245,10 +241,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  // ➋ Nút Đăng ký
   Widget _buildRegisterButton() => Center(
     child: AuthCustomButton(
-      text: isLoading ? 'Đang đăng nhập...' : AppStrings.register,
+      text: isLoading ? 'Đang đăng ký...' : AppStrings.register,
       isLoading: isLoading,
       onPressed: (_agree && !isLoading) ? _handleRegister : null,
     ),
@@ -271,6 +266,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Widget _buildSocialButtons() {
+    final double screenWidth = MediaQuery.of(context).size.width;
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -278,14 +274,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
           onPressed: _handleGoogleRegister,
           image: Image(image: AssetImage('assets/images/google_icon.png')),
           text: 'Google',
-          width: 174,
+          width: screenWidth * 0.42, // Sử dụng biến screenWidth
         ),
         const SizedBox(width: 16),
         ButtonGgFbAuth(
           onPressed: _handleFacebookRegister,
           image: Image(image: AssetImage('assets/images/facebook_icon.png')),
           text: 'Facebook',
-          width: 174,
+          width: screenWidth * 0.42,
         ),
       ],
     );
@@ -335,7 +331,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
       return;
     }
 
-    // Bắt đầu loading
     setState(() {
       isLoading = true;
     });
@@ -350,26 +345,27 @@ class _RegisterScreenState extends State<RegisterScreen> {
         email: _emailController.text.trim(),
       );
 
-      // Gọi API đăng ký
       final authRepository = AuthRepository();
       final response = await authRepository.register(registerRequest);
 
       if (response.success) {
-        // Đăng ký thành công
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Đăng ký thành công! Vui lòng đăng nhập.'),
+            content: Text(
+              'Đăng ký thành công! Vui lòng kiểm tra email để xác thực OTP.',
+            ),
             backgroundColor: Colors.green,
           ),
         );
 
-        // Chuyển về màn hình đăng nhập
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => LoginScreen()),
+          MaterialPageRoute(
+            builder: (context) =>
+                OtpVerificationScreen(email: _emailController.text.trim()),
+          ),
         );
       } else {
-        // Đăng ký thất bại
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(response.message ?? 'Đăng ký thất bại'),
@@ -378,7 +374,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
         );
       }
     } catch (e) {
-      // Xử lý lỗi
+      print('Lỗi khi đăng ký: $e');
+      print(e.toString());
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Đã xảy ra lỗi: ${e.toString()}'),
@@ -386,7 +383,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         ),
       );
     } finally {
-      // Kết thúc loading
+      // Dừng loading
       if (mounted) {
         setState(() {
           isLoading = false;
@@ -396,20 +393,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   void _handleGoogleRegister() {
-    print('');
+    print('Google register');
   }
 
   void _handleFacebookRegister() {
-    print('');
+    print('Facebook register');
   }
 
+  @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
     _usernameController.dispose();
     _firstnameController.dispose();
     _lastnameController.dispose();
-
     super.dispose();
   }
 }
